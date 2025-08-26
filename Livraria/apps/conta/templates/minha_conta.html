@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+    <section class="bg-white rounded-md p-4">
+        <h2 class="text-2xl/7 font-bold text-slate-800 sm:truncate sm:text-3xl sm:tracking-tight mb-4">Histórico de compras</h2 >
+        <hr>
+            {% if pedidos %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 table-auto">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for item in pedidos %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 max-w-[28rem] whitespace-nowrap text-sm text-gray-900">
+                                    <div class="truncate" title="#{{ item.id }}">#{{ item.id}}</div>
+                                </td>
+
+ 
+                                <td class="px-6 py-4 whitespace-nowrap text-center border">
+                                    <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium inset-ring " data-status-tag="{{ item.status }}">{{item.get_status_display}}</span>
+                                </td>
+
+
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-700">
+                                    R$ {{ item.valor_total|floatformat:2 }}
+                                </td>
+
+
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div class="inline-flex items-center gap-2">
+                                        {% if item.status == 1 %}
+                                            <button title="Finalizar" class="btn-finalizar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 " data-id="{{item.id }}">f</button>
+                                            <button title="Cancelar" class="btn-cancelar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 " data-id="{{item.id }}">c</button>
+                                        {% endif %}
+                                        
+                                        <button title="Exportar" class="btn-exportar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 " data-id="{{item.id }}">e</button>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Seu carrinho está vazio.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="mt-4 flex justify-end">
+                <button class="btn-exportar inline-flex items-center px-4 py-2 rounded-md bg-gradient-to-br from-cyan-500 to-blue-600  text-white font-medium hover:bg-cyan-700 transition">
+                    Exportar todos Pedidos
+                </button>
+            </div>
+
+    
+        {% else %}
+            <p class="mt-8">Nenhum pedido feito.</p>
+        {% endif %}
+    </section>   
+
+
+     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const botaoFinalizar = document.querySelectorAll('.btn-finalizar');
+            const botaoCancelar = document.querySelectorAll('.btn-cancelar');
+            const botaoExportar = document.querySelectorAll('.btn-exportar');
+
+            botaoFinalizar.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+
+                    $.ajax({
+                        url: "{% url 'finalizar_pedido' %}",
+                        type: "POST",
+                        data: {
+                            'id_pedido': id,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        },
+                        success: function(response) {
+                            window.location.reload()
+                        },
+                        error: function(response) {
+                            window.location.reload()
+                        }
+                    });
+                    
+                });
+            });
+
+            botaoCancelar.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+
+                    $.ajax({
+                        url: "{% url 'cancelar_pedido' %}",
+                        type: "POST",
+                        data: {
+                            'id_pedido': id,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        },
+                        success: function(response) {
+                            window.location.reload()
+                        },
+                        error: function(response) {
+                            window.location.reload()
+                        }
+                    });
+                    
+                });
+            });
+
+            botaoExportar.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+
+                    $.ajax({
+                        url: "{% url 'exportar_pdf' %}",
+                        type: "POST",
+                        data: {
+                            'id_pedido': id,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        },
+                        xhrFields: {
+                            responseType: 'blob'   // 🔹 importante: retorna como binário
+                        },
+                        success: function(response) {
+                            var blob = new Blob([response], { type: 'application/pdf' });
+                            var url = window.URL.createObjectURL(blob);
+                            window.open(url, '_blank'); // abre em nova aba
+                        },
+                        error: function(response) {
+                            alert("Erro ao gerar PDF");
+                        }
+                    });
+                });
+            });
+
+
+            document.querySelectorAll('[data-status-tag]').forEach(function(el) {
+                const tag = el.getAttribute('data-status-tag') || '';
+                el.classList.remove('border');
+                switch(tag) {
+                    case '2':
+                    el.classList.add('bg-green-50','text-green-700','inset-ring-green-600/10');
+                    break;
+                    case '3':
+                    el.classList.add('bg-red-50','text-red-700','inset-ring-red-600/10');
+                    break;
+                    case '1':
+                    el.classList.add('bg-yellow-50 ','text-yellow-50','inset-ring-yellow-600/10');
+                    break;
+                    default:
+                    el.classList.add('bg-sky-50','text-sky-800','border-sky-100');
+                }
+            });
+
+
+
+        });
+    </script>
+
+    
+{% endblock %}

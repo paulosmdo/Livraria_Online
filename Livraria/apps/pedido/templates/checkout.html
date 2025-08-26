@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+    <section class="bg-white rounded-md p-4">
+        <h2 class="text-2xl/7 font-bold text-slate-800 sm:truncate sm:text-3xl sm:tracking-tight">Resumo da compra</h2 >
+        {% if user.is_authenticated %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 table-auto">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for item in carrinho %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 max-w-[28rem] whitespace-nowrap text-sm text-gray-900">
+                                        <div class="truncate" title="{{ item.titulo }}">{{ item.titulo|truncatechars:40 }}</div>
+                                    </td>
+
+    
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <span class="text-sm font-medium">{{ item.quantidade }}</span>                                        
+                                    </td>
+
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-700">
+                                        R$ {{ item.preco |floatformat:2  }}
+                                    </td>
+
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-gray-900">
+                                        R$ {{ item.valor_total |floatformat:2  }}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Seu carrinho está vazio.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                </table>
+            </div>
+
+
+            <div class="mt-4 flex justify-between">
+                <h2 class="text-xl/7 font-bold text-slate-800 sm:truncate sm:text-2xl ">Total: R$ {{ valor_total|floatformat:2 }}</h2>
+                <button class="btn-finalizar inline-flex items-center px-4 py-2 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 transition"
+                    data-id="{{id_pedido}}">
+                    Finalizar Compra
+                </button>
+            </div>
+
+        {% else %}
+            <h3>Para finalizar a compra, é necessário estar logado.</h3>
+            <br>
+            <div class="inline-flex items-center gap-2">
+                <a href="{% url 'fazer_login' %}">Entrar</a> | <a href="{% url 'cadastro' %}">Criar uma conta</a> 
+            </div>
+        {% endif %}
+
+
+    </section>
+ 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const botaoFinalizar = document.querySelectorAll('.btn-finalizar');
+
+            botaoFinalizar.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+
+                    $.ajax({
+                        url: "{% url 'finalizar_pedido' %}",
+                        type: "POST",
+                        data: {
+                            'id_pedido': id,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        },
+                        success: function(response) {
+                            window.location.href = "{% url 'catalogo' %}"
+                        },
+                        error: function(response) {
+                            window.location.href = "{% url 'catalogo' %}"
+                        }
+                    });
+                    
+                });
+            });
+
+
+        });
+    </script>
+   
+
+    
+{% endblock %}

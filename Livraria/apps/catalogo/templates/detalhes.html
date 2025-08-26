@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Livro{% endblock %}
+
+{% block content %}
+    <section class="bg-white rounded-md p-4">
+        {% if livro %}
+            <a class="pb-2" href="{% url 'catalogo' %}"> Voltar para o catálogo</a>
+            <br>
+
+            <div class="rounded overflow-hidden mb-3 flex justify-center">
+                <img src="{{ livro.imageLinks.thumbnail }}"
+                    alt="{{ livro.title }}"
+                    class="rounded max-w-[150px] max-h-[200px] object-contain">
+            </div>
+
+            
+            <h3 class="text-sm font-semibold">{{ livro.title }}</h3>
+            <p class="text-xs text-slate-500">Autor(es):{{ livro.authors|join:", "|default:"Sem Autor" }} Categorias: {{ livro.categories|join:", " }}</p>
+            <p class="text-xs text-slate-500">Publicado em: {{ livro.publishedDate|default:"Sem data de publicacao"}} por {{livro.publisher |default:"desconhecido"}}</p>
+            <p class="text-sm text-slate-800 mt-2"><b>Sinopse:</b> </p>
+            <p class="text-xs text-slate-500">{{ livro.description}}</p>
+            <p class="text-xs text-slate-500mt-2"><b>Paginas:</b> {{livro.pageCount}}</p>
+            <div class="mt-5 flex items-center justify-between">
+                <span class="font-semibold">Preço: R$ {{ preco.retailPrice.amount|default:0.00|floatformat:2 }}</span>
+                <button class="btn-add-carrinho text-sm px-2 py-1 rounded border hover:bg-slate-50" data-id="{{livro_id}}">Adicionar</button>
+            </div>
+        {% else %}
+            <p>Livro não encontrado.</p>
+        {% endif %}
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const botoesSalvar = document.querySelectorAll('.btn-add-carrinho');
+
+            botoesSalvar.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+
+                    $.ajax({
+                        url: "{% url 'add_carrinho' %}",
+                        type: "POST",
+                        data: {
+                            'item_id': id,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        },
+                        success: function(response) {
+                            window.location.reload()
+                        },
+                        error: function(response) {
+                            window.location.reload()
+                        }
+                    });
+                    
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

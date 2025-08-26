@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; color:#000}
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>Lista de Pedidos</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Número do Pedido</th>
+                <th>Status</th>
+                <th>Valor Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in pedidos %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.get_status_display }}</td>
+                    <td>R$ {{ item.valor_total|floatformat:2 }}</td>
+                </tr>
+                {% for detalhe in itens_pedidos %}
+                    {% if detalhe.id_pedido == item %}
+                        <tr><td style="padding-left: 30px;" colspan="3"> - {{ detalhe.titulo_livro|truncatechars:40 }}   Preco: R${{detalhe.preco}}  Qtd: {{detalhe.quantidade}} Total: R$ {{detalhe.valor_total}}</td></tr>
+                    {% endif%}
+                        
+                {% endfor %}
+            {% empty %}
+                <tr><td colspan="3">Nenhum pedido</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
