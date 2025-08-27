@@ -53,8 +53,3 @@ A camada de estilização foi implementada com **TailwindCSS**, e o banco de dad
 7. Acesse a aplicação no navegador:
 	```bash	
 	http://localhost:8000
-### 3° Opção – Hospedagem em Nuvem (Vercel + NeonDB):
-**Observação:** a funcionalidade de **exportação de PDF** foi removida devido a limitações da infraestrutura gratuita da Vercel.
-1. Acesse a aplicação diretamente pelo link:
-	```bash	
-	https://livraria-online-tsmx.vercel.app/
