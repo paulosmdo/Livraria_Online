@@ -1,0 +1,30 @@
+services:
+  livraria:
+    container_name: livraria
+    build:
+      context: Livraria/
+    ports:
+      - 8000:8000    
+    environment:
+      SECRET_KEY: "django-insecure-sbf8fg!0bd_7-9)g2wk839)u2dv*r#69!a(^^2ssd)#%4mw1pl"
+      DEBUG: "1"
+      ALLOWED_HOSTS: "127.0.0.1, localhost"
+      DB_ENGINE: "django.db.backends.postgresql"
+      POSTGRES_DB: "livraria_db"
+      POSTGRES_USER: "tsmx"
+      POSTGRES_PASSWORD: "123456"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "5432"
+    depends_on:
+      - postgres
+  postgres:
+    container_name: postgres
+    image: postgres:16.10-alpine3.22
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: "livraria_db"
+      POSTGRES_USER: "tsmx"
+      POSTGRES_PASSWORD: "123456"
