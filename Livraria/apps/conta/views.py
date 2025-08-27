@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.template.loader import render_to_string
 from .models import Usuario
-from weasyprint import HTML
+# from weasyprint import HTML
 import tempfile
 from apps.pedido.models import Pedido, Itens_Pedidos
 
@@ -68,26 +68,28 @@ def exportar_pdf(req):
             pedido = Pedido.objects.filter(id=id_pedido, id_usuario=req.user.id)
             itens_pedido = Itens_Pedidos.objects.filter(id_pedido=id_pedido)
 
-            html_string = render_to_string('pdf.html', {'pedidos': pedido, 'itens_pedidos': itens_pedido})
+            # html_string = render_to_string('pdf.html', {'pedidos': pedido, 'itens_pedidos': itens_pedido})
             
-            with tempfile.NamedTemporaryFile(delete=True) as output:
-                HTML(string=html_string).write_pdf(output.name)
-                output.seek(0)
-                response.write(output.read())
+            # with tempfile.NamedTemporaryFile(delete=True) as output:
+            #     HTML(string=html_string).write_pdf(output.name)
+            #     output.seek(0)
+            #     response.write(output.read())
 
-            return response
+            # return response
+            return JsonResponse({'status': 'error', 'message': 'Metodo não existe'}, status=404)
         else:
             pedidos = Pedido.objects.filter(id_usuario=req.user.id)
             itens_pedidos = Itens_Pedidos.objects.filter(id_pedido__in=pedidos)
 
-            html_string = render_to_string('pdf.html', {'pedidos': pedidos, 'itens_pedidos': itens_pedidos})
+            # html_string = render_to_string('pdf.html', {'pedidos': pedidos, 'itens_pedidos': itens_pedidos})
             
-            with tempfile.NamedTemporaryFile(delete=True) as output:
-                HTML(string=html_string).write_pdf(output.name)
-                output.seek(0)
-                response.write(output.read())
+            # with tempfile.NamedTemporaryFile(delete=True) as output:
+            #     HTML(string=html_string).write_pdf(output.name)
+            #     output.seek(0)
+            #     response.write(output.read())
 
-            return response
+            # return response
+            return JsonResponse({'status': 'error', 'message': 'Metodo não existe'}, status=404)
     else:
         return JsonResponse({'status': 'error', 'message': 'Metodo não existe'}, status=404)
 

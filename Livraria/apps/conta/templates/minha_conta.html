@@ -3,6 +3,12 @@
 {% block title %}Checkout{% endblock %}
 
 {% block content %}
+    <div class="space-y-2 mb-6">
+        <ul class="messages">
+                <li class="rounded-md px-4 py-3 text-sm shadow-sm border" data-message-tag="error"
+                role="status">o Vercel não oferece suporte aos recursos necessários para a biblioteca de impressão em PDF usada no Python (WeasyPrint). Então exportar PDF não vai funcuionar nessa branch 😕 </li>
+        </ul>
+    </div>
     <section class="bg-white rounded-md p-4">
         <h2 class="text-2xl/7 font-bold text-slate-800 sm:truncate sm:text-3xl sm:tracking-tight mb-4">Histórico de compras</h2 >
         <hr>
