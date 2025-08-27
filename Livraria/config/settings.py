@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-sbf8fg!0bd_7-9)g2wk839)u2dv*r#69!a(^^2ssd)#%4mw1pl'
+SECRET_KEY =  os.getenv('SECRET_KEY', 'preencher!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.getenv('DEBUG', 0)))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')
+    if h.strip()
+]
 
 
 # Application definition
@@ -78,8 +81,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', 'preencher!'),
+        'NAME': os.getenv('POSTGRES_DB', 'preencher!'),
+        'USER': os.getenv('POSTGRES_USER', 'preencher!'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'preencher!'),
+        'HOST': os.getenv('POSTGRES_HOST', 'preencher!'),
+        'PORT': os.getenv('POSTGRES_PORT', 'preencher!'),
     }
 }
 

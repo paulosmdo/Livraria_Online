@@ -38,11 +38,24 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <div class="inline-flex items-center gap-2">
                                         {% if item.status == 1 %}
-                                            <button title="Finalizar" class="btn-finalizar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 " data-id="{{item.id }}">f</button>
-                                            <button title="Cancelar" class="btn-cancelar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 " data-id="{{item.id }}">c</button>
+                                            <button title="Finalizar" class="btn-finalizar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100" data-id="{{item.id}}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </button>
+
+                                            <button title="Cancelar" class="btn-cancelar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100" data-id="{{item.id}}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
                                         {% endif %}
-                                        
-                                        <button title="Exportar" class="btn-exportar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 " data-id="{{item.id }}">e</button>
+
+                                        <button title="Exportar" class="btn-exportar inline-flex items-center justify-center px-2 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100" data-id="{{item.id}}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12v8m0-8l-4 4m4-4l4 4M4 8h16" />
+                                            </svg>
+                                        </button>
 
                                     </div>
                                 </td>
